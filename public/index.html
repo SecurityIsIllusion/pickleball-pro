@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Pickleball Pro</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loading">
+    <div class="loader-logo">PICKLEBALL PRO</div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+  </div>
+
+  <div id="app">
+    <div id="canvas-wrapper">
+      <canvas id="gameCanvas" width="960" height="540"></canvas>
+
+      <!-- MENU OVERLAY -->
+      <div id="overlay-menu" class="overlay active">
+        <div class="overlay-inner slide-up">
+          <h1 class="game-title">PICKLEBALL<span>PRO</span></h1>
+          <div class="name-row">
+            <label for="playerName">Your Name</label>
+            <input id="playerName" type="text" maxlength="16" placeholder="Enter name..." value="Player 1" autocomplete="off">
+          </div>
+          <div class="diff-row">
+            <span class="diff-label">Mode</span>
+            <div class="diff-pills">
+              <button class="pill active" data-mode="1p">👤 1 Player</button>
+              <button class="pill" data-mode="2p">👥 2 Players</button>
+            </div>
+          </div>
+          <div class="diff-row">
+            <span class="diff-label">P1 Char</span>
+            <div class="diff-pills">
+              <button class="pill active" data-gender="male">♂ Male</button>
+              <button class="pill" data-gender="female">♀ Female</button>
+            </div>
+          </div>
+          <div id="p2config" style="display:none">
+            <div class="name-row" style="margin-bottom:10px">
+              <label for="player2Name">P2 Name</label>
+              <input id="player2Name" type="text" maxlength="16" placeholder="Player 2..." value="Player 2" autocomplete="off">
+            </div>
+            <div class="diff-row" style="margin-bottom:14px">
+              <span class="diff-label">P2 Char</span>
+              <div class="diff-pills">
+                <button class="pill active" data-p2gender="male">♂ Male</button>
+                <button class="pill" data-p2gender="female">♀ Female</button>
+              </div>
+            </div>
+          </div>
+          <div class="diff-row">
+            <span class="diff-label">Level</span>
+            <div class="diff-pills" id="levelPills"></div>
+          </div>
+          <div class="menu-btns">
+            <button class="btn-primary" id="btnPlay">▶ Play</button>
+            <button class="btn-secondary" id="btnLeaderboard">🏆 Leaderboard</button>
+            <button class="btn-secondary" id="btnSettings">⚙ Settings</button>
+          </div>
+          <details class="howto">
+            <summary>How to Play</summary>
+            <div class="howto-body">
+              <p><strong style="color:#60a5fa">P1:</strong> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Move &nbsp; <kbd>SPACE</kbd> Power shot &nbsp; <kbd>P</kbd>/<kbd>Esc</kbd> Pause</p>
+              <p><strong style="color:#fb923c">P2 (2P mode):</strong> <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> Move &nbsp; <kbd>Enter</kbd> Power shot / Serve</p>
+              <p>Only the <strong>serving team</strong> scores. First to 11, win by 2.</p>
+              <p>Don't volley inside the <span style="color:#fbbf24">Kitchen (NVZ)</span>!</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- PAUSED OVERLAY -->
+      <div id="overlay-pause" class="overlay">
+        <div class="overlay-inner slide-up">
+          <h2>PAUSED</h2>
+          <div class="menu-btns">
+            <button class="btn-primary" id="btnResume">▶ Resume</button>
+            <button class="btn-secondary" id="btnRestartP">↺ Restart</button>
+            <button class="btn-secondary" id="btnSettingsP">⚙ Settings</button>
+            <button class="btn-secondary" id="btnMenuP">⌂ Main Menu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAMEOVER OVERLAY -->
+      <div id="overlay-gameover" class="overlay">
+        <div class="overlay-inner slide-up">
+          <div id="go-winner"></div>
+          <div class="stats-grid" id="go-stats"></div>
+          <div class="menu-btns">
+            <button class="btn-primary" id="btnSaveScore">🏆 View Leaderboard</button>
+            <button class="btn-secondary" id="btnPlayAgain">▶ Play Again</button>
+            <button class="btn-secondary" id="btnMenuGO">⌂ Main Menu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARD OVERLAY -->
+      <div id="overlay-leaderboard" class="overlay">
+        <div class="overlay-inner slide-up">
+          <h2>🏆 Leaderboard</h2>
+          <table id="lb-table">
+            <thead><tr><th>#</th><th>Name</th><th>Score</th><th>Level</th><th>Mode</th></tr></thead>
+            <tbody id="lb-body"></tbody>
+          </table>
+          <div class="menu-btns">
+            <button class="btn-danger" id="btnClearLB">🗑 Clear</button>
+            <button class="btn-secondary" id="btnMenuLB">← Back</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS OVERLAY -->
+      <div id="overlay-settings" class="overlay">
+        <div class="overlay-inner slide-up">
+          <h2>⚙ Settings</h2>
+          <div class="settings-rows">
+            <div class="setting-row">
+              <span>Sound Effects</span>
+              <label class="toggle"><input type="checkbox" id="soundToggle" checked><span class="slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <span>Player Name</span>
+              <input id="settingsName" type="text" maxlength="16" placeholder="Name..." value="Player 1" autocomplete="off">
+            </div>
+          </div>
+          <div class="controls-ref">
+            <strong>Controls</strong>
+            <p>W/A/S/D or ↑←↓→ Move &nbsp; SPACE Power Shot &nbsp; P/Esc Pause</p>
+          </div>
+          <div class="menu-btns">
+            <button class="btn-secondary" id="btnBackSettings">← Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

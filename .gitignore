@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Secrets & credentials — NEVER commit these
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*_rsa
+*_rsa.pub
+id_ed25519*
+credentials.json
+secrets.json
+config.local.js
+**/secrets/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
